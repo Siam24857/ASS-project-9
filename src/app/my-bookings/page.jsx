@@ -9,31 +9,24 @@ export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
- 
-  
- 
- 
+  useEffect(() => {
     const fetchBookings = async () => {
-      //  const verifiedtoken = process.env.JWTTOKJEN 
-       
       try {
-     
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/bookings`,
+          {
+            cache: "no-store",
+          }
+        );
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`,{
-          cache: "no-store",
-          // headers: `${verifiedtoken}`,
-        })
-        
-        // Check if response is ok
         if (!res.ok) {
           console.error("Failed to fetch bookings:", res.status);
-          setBookings([]); // Set empty array on error
+          setBookings([]);
           return;
         }
-        
+
         const data = await res.json();
-        
-        // Ensure data is an array before setting
+
         if (Array.isArray(data)) {
           setBookings(data);
         } else {
@@ -42,14 +35,14 @@ export default function MyBookings() {
         }
       } catch (error) {
         console.log(error);
-        setBookings([]); // Set empty array on error
+        setBookings([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBookings();
- 
+  }, []);
 
   // CANCEL (FRONTEND ONLY)
   const handleCancel = (id) => {
@@ -106,6 +99,7 @@ export default function MyBookings() {
               >
                 {/* LEFT */}
                 <div className="flex gap-4">
+
                   {/* IMAGE */}
                   <div className="relative w-[120px] h-[85px] rounded-xl overflow-hidden bg-gray-800">
                     {booking.image && (
@@ -123,14 +117,16 @@ export default function MyBookings() {
                     <h2 className="text-2xl font-bold">
                       {booking.roomName}
                     </h2>
-                    <p className="text-gray-400">
-                      {booking.floor}
-                    </p>
+                    <p className="text-gray-400">{booking.floor}</p>
+
                     <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-300">
                       <span>📅 {formatDate(booking.date)}</span>
-                      <span>🕒 {booking.startTime} – {booking.endTime}</span>
+                      <span>
+                        🕒 {booking.startTime} – {booking.endTime}
+                      </span>
                       <span>💲 ${booking.totalCost}.00 total</span>
                     </div>
+
                     <p className="italic text-gray-400 mt-3">
                       Note: {booking.specialNote || "N/A"}
                     </p>
@@ -149,8 +145,8 @@ export default function MyBookings() {
                         <span className="px-4 py-1 rounded-full bg-green-500/15 text-green-400 border border-green-500/20">
                           ● Confirmed
                         </span>
-                         
                       </div>
+
                       <button
                         onClick={() => handleCancel(booking._id)}
                         className="border border-red-500/30 text-red-400 px-5 py-2 rounded-xl hover:bg-red-500/10 transition"
@@ -160,6 +156,7 @@ export default function MyBookings() {
                     </>
                   )}
                 </div>
+
               </div>
             ))}
           </div>
