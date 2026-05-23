@@ -70,23 +70,23 @@ export default function Navbar() {
           {user && (
             <>
               <li>
-                <Link href="/add-room" className="text-gray-300 hover:text-white transition">
+                <Link href="/add-room"   className={pathname === "/add-room" ? "text-yellow-400" : "text-gray-300 hover:text-white transition"}>
                   Add Room
                 </Link>
               </li>
 
               <li>
-                <Link href="/my-listroom" className="text-gray-300 hover:text-white transition">
+                <Link href="/my-listroom" className={pathname === "/my-listroom" ? "text-yellow-400" : "text-gray-300 hover:text-white transition"}>
                   My Listings
                 </Link>
               </li>
 
               <li>
-                <Link href="/my-bookings" className="text-gray-300 hover:text-white transition">
+                <Link href="/my-bookings" className={pathname === "/my-bookings" ? "text-yellow-400" : "text-gray-300 hover:text-white transition"}>
                   My Bookings
                 </Link>
               </li>
-            </>
+             </>
           )}
         </ul>
 
