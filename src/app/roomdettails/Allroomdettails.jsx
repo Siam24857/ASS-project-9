@@ -10,11 +10,11 @@ import {
 } from "lucide-react";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Link from "next/link";
 import BookingModal from "@/app/components/Bookinfmodal";
  
-import { authClient } from "@/app/lib/auth-client";
+import { authClient, useSession } from "@/app/lib/auth-client";
 
 const Allroomdettails = () => {
 
@@ -26,6 +26,14 @@ const Allroomdettails = () => {
  
   const [room, setRoom] = useState(null);
   
+
+   const { data: session } = useSession()
+
+    const user = session?.user;
+
+    if(!user) {
+        redirect("/login")
+    }
 
   
 
