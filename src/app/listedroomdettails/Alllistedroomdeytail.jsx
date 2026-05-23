@@ -15,33 +15,35 @@ import Link from "next/link";
 import BookingModal from "@/app/components/Bookinfmodal";
 import { authClient } from "@/app/lib/auth-client";
 
-
-
 const Alllistedroomdeytail = () => {
     
   const params = useParams();
   const roomid = params?.roomid;
 
- 
   const [room, setRoom] = useState(null);
- 
+  const [loading, setLoading] = useState(true); // ADDED: missing loading state
 
-  
   useEffect(() => {
-
-
     if (!roomid) return;
 
     const fetchRoom = async () => {
       try {
-       const {data, error} = await authClient.token()
+        // FIXED: token retrieval
+        const  {data, error} = await authClient.token(); // C 
+    
+        
+        if (!token) {
+          console.log("No token found");
+          setLoading(false);
+          return;
+        }
 
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/listedroomdetails/${roomid}`, 
           {
             headers: {
-            authorization: `Bearer ${data.token}`,
-          },
+              authorization: `Bearer ${data.token}`, 
+            },
           }
         );
 
@@ -63,171 +65,191 @@ const Alllistedroomdeytail = () => {
 
   }, [roomid]);
 
-  
-
-  // ROOM NOT FOUND
-   
+  // ADDED: loading state check
+  if (loading) {
     return (
-        <div>
-            <div className="min-h-screen bg-[#071426] text-white p-6">
+      <div className="min-h-screen bg-[#071426] text-white p-6 flex items-center justify-center">
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
-      {/* Back */}
-      <Link href="/my-listroom">
-        <button className="flex items-center gap-2 text-gray-300 mb-6">
-          <ArrowLeft size={18} />
-          My Listings
-        </button>
-      </Link>
+  // ADDED: room not found check
+  if (!room) {
+    return (
+      <div className="min-h-screen bg-[#071426] text-white p-6">
+        <Link href="/my-listroom">
+          <button className="flex items-center gap-2 text-gray-300 mb-6">
+            <ArrowLeft size={18} />
+            My Listings
+          </button>
+        </Link>
+        <div className="text-center text-red-500">Room not found</div>
+      </div>
+    );
+  }
+   
+  return (
+    <div>
+      <div className="min-h-screen bg-[#071426] text-white p-6">
 
-      {/* Layout */}
-      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Back */}
+        <Link href="/my-listroom">
+          <button className="flex items-center gap-2 text-gray-300 mb-6">
+            <ArrowLeft size={18} />
+            My Listings
+          </button>
+        </Link>
 
-        {/* Left */}
-        <div className="lg:col-span-2">
+        {/* Layout */}
+        <div className="grid lg:grid-cols-3 gap-8">
 
-          {/* Image */}
-          <div className="relative h-[420px] rounded-2xl overflow-hidden">
-            <Image
-              src={
-                room.image ||
-                "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1600&auto=format&fit=crop"
-              }
-              alt={room.roomName}
-              fill
-              className="object-cover"
-            />
-          </div>
+          {/* Left */}
+          <div className="lg:col-span-2">
 
-          {/* Title */}
-          <h1 className="text-5xl font-bold mt-8">
-            {room.roomName}
-          </h1>
-
-          {/* Info */}
-          <div className="flex gap-6 mt-5 text-gray-300 flex-wrap">
-
-            <div className="flex items-center gap-2">
-              <Calendar size={18} />
-              {room.bookings || 0} bookings
+            {/* Image */}
+            <div className="relative h-[420px] rounded-2xl overflow-hidden">
+              <Image
+                src={
+                  room?.image ||
+                  "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1600&auto=format&fit=crop"
+                }
+                alt={room?.roomName}
+                fill
+                className="object-cover"
+              />
             </div>
 
-            <div className="flex items-center gap-2">
-              <MapPin size={18} />
-              {room.floor} Floor
+            {/* Title */}
+            <h1 className="text-5xl font-bold mt-8">
+              {room?.roomName}
+            </h1>
+
+            {/* Info */}
+            <div className="flex gap-6 mt-5 text-gray-300 flex-wrap">
+
+              <div className="flex items-center gap-2">
+                <Calendar size={18} />
+                {room?.bookings || 0} bookings
+              </div>
+
+              <div className="flex items-center gap-2">
+                <MapPin size={18} />
+                {room?.floor} Floor
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Users size={18} />
+                Up to {room?.capacity} people
+              </div>
+
             </div>
 
-            <div className="flex items-center gap-2">
-              <Users size={18} />
-              Up to {room.capacity} people
-            </div>
+            {/* Divider */}
+            <div className="border-b border-[#1c2c44] my-8"></div>
 
-          </div>
-
-          {/* Divider */}
-          <div className="border-b border-[#1c2c44] my-8"></div>
-
-          {/* About */}
-          <h2 className="text-2xl font-semibold mb-4">
-            About this room
-          </h2>
-
-          <p className="text-gray-300 leading-8">
-            {room.description}
-          </p>
-
-          {/* Amenities */}
-          <div className="mt-8">
-
+            {/* About */}
             <h2 className="text-2xl font-semibold mb-4">
-              Amenities
+              About this room
             </h2>
 
-            <div className="flex flex-wrap gap-3">
+            <p className="text-gray-300 leading-8">
+              {room?.description}
+            </p>
 
-              {room.amenities?.map((item, i) => (
-                <span
-                  key={i}
-                  className="bg-[#0d1b2f] border border-[#1c2c44] px-4 py-2 rounded-full text-sm"
-                >
-                  {item}
-                </span>
-              ))}
+            {/* Amenities */}
+            <div className="mt-8">
 
-            </div>
-          </div>
-        </div>
-
-        {/* Right Card */}
-        <div>
-
-          <div className="bg-[#0d1b2f] border border-[#1c2c44] rounded-2xl p-6">
-
-            {/* Price */}
-            <div className="flex items-end gap-2">
-
-              <h2 className="text-5xl font-bold">
-                ${room.rate}/hr
+              <h2 className="text-2xl font-semibold mb-4">
+                Amenities
               </h2>
 
-              <span className="text-gray-400 mb-1">
-                /hour
-              </span>
+              <div className="flex flex-wrap gap-3">
 
+                {room?.amenities?.map((item, i) => (
+                  <span
+                    key={i}
+                    className="bg-[#0d1b2f] border border-[#1c2c44] px-4 py-2 rounded-full text-sm"
+                  >
+                    {item}
+                  </span>
+                ))}
+
+              </div>
             </div>
-
-            {/* Details */}
-            <div className="space-y-5 mt-8">
-
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2 text-gray-400">
-                  <MapPin size={18} />
-                  Floor
-                </div>
-
-                <span>{room.floor} Floor</span>
-              </div>
-
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2 text-gray-400">
-                  <Users size={18} />
-                  Capacity
-                </div>
-
-                <span>Up to {room.capacity}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2 text-gray-400">
-                  <DollarSign size={18} />
-                  Rate
-                </div>
-
-                <span>{room.rate}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2 text-gray-400">
-                  <Calendar size={18} />
-                  Bookings
-                </div>
-
-                <span>{room.bookings || 0}</span>
-              </div>
-
-            </div>
-
-            {/* Button */}
-            <button className="w-full mt-8 bg-[#e6983c] hover:bg-[#d98928] py-4 rounded-xl font-semibold transition">
-              <BookingModal room={room} />
-            </button>
-
           </div>
-        </div>
 
+          {/* Right Card */}
+          <div>
+
+            <div className="bg-[#0d1b2f] border border-[#1c2c44] rounded-2xl p-6">
+
+              {/* Price */}
+              <div className="flex items-end gap-2">
+
+                <h2 className="text-5xl font-bold">
+                  ${room?.rate}/hr
+                </h2>
+
+                <span className="text-gray-400 mb-1">
+                  /hour
+                </span>
+
+              </div>
+
+              {/* Details */}
+              <div className="space-y-5 mt-8">
+
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <MapPin size={18} />
+                    Floor
+                  </div>
+
+                  <span>{room?.floor} Floor</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Users size={18} />
+                    Capacity
+                  </div>
+
+                  <span>Up to {room?.capacity}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <DollarSign size={18} />
+                    Rate
+                  </div>
+
+                  <span>{room?.rate}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Calendar size={18} />
+                    Bookings
+                  </div>
+
+                  <span>{room?.bookings || 0}</span>
+                </div>
+
+              </div>
+
+              {/* Button */}
+              <button className="w-full mt-8 bg-[#e6983c] hover:bg-[#d98928] py-4 rounded-xl font-semibold transition">
+                <BookingModal room={room} />
+              </button>
+
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
-        </div>
-    );
+  );
 };
 
 export default Alllistedroomdeytail;
