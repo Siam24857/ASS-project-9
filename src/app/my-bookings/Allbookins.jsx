@@ -8,6 +8,7 @@ import { authClient } from "../lib/auth-client";
 
 
 const Allbookins = () => {
+    const [deletcount, setDeletcount] = useState(false)
 
     const [bookings, setBookings] = useState([]);
  
@@ -51,12 +52,29 @@ const Allbookins = () => {
     fetchBookings();
   }, []);
 
-  // CANCEL (FRONTEND ONLY)
-  const handleCancel = (id) => {
-    const updated = bookings.map((b) =>
-      b._id === id ? { ...b, status: "cancelled" } : b
-    );
-    setBookings(updated);
+   
+  const handleCancel = async(id) => {
+     const {data, error} = await authClient.token()
+       const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/bookings-deleting/${id}`,
+          {
+             method: "DELETE",
+            headers: {
+              authorization: `Bearer ${data.token}`,
+            },
+          }
+        );
+
+        if (!res.ok) {
+          console.error("Failed to fetch bookings:", res.status);
+          setBookings([]);
+          return;
+        }
+
+        const datas = await res.json();
+        if(datas){
+             setDeletcount(true);
+        }
   };
 
   // SAFE DATE FORMAT
@@ -135,7 +153,7 @@ const Allbookins = () => {
 
                 {/* RIGHT */}
                 <div className="flex flex-col items-end gap-4">
-                  {booking.status === "cancelled" ? (
+                  {deletcount ? (
                     <span className="px-4 py-1 rounded-full bg-red-500/15 text-red-400 border border-red-500/20">
                       ✕ Cancelled
                     </span>
