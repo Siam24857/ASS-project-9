@@ -66,13 +66,7 @@ const Alllistedroomdeytail = () => {
   
 
   // ROOM NOT FOUND
-  if (!room) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#071426] text-red-500">
-        Room not found
-      </div>
-    );
-  }
+   
     return (
         <div>
             <div className="min-h-screen bg-[#071426] text-white p-6">

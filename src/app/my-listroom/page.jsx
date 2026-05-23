@@ -21,10 +21,6 @@ export default async function MyListingsCard() {
    })
     
 
- 
-  
-
-
   let data = [];
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listed-room`, {
@@ -42,7 +38,7 @@ export default async function MyListingsCard() {
     console.error("Error fetching listed rooms:", err);
   }
 
-    if (!data) {
+    if (!res) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#071426] text-red-500">
         ListedRoom not found

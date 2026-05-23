@@ -70,16 +70,6 @@ const Allroomdettails = () => {
 
 }, [id]);
 
-  
-
-  // ROOM NOT FOUND
-  if (!room) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#071426] text-red-500">
-        Room not found
-      </div>
-    );
-  }
 
     return (
         <div>
