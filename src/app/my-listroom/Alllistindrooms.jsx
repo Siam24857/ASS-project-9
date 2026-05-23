@@ -63,15 +63,12 @@ const Alllistindrooms = ({ da }) => {
     }
 
     try {
+
+
       const {data, error } = await authClient.token();
        
       
-      if (!token) {
-        toast.error("Authentication failed. Please login again.");
-        router.push("/login");
-        setIsLoading(false);
-        return;
-      }
+       
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listed/${_id}`, {
         method: "PATCH",
@@ -95,7 +92,7 @@ const Alllistindrooms = ({ da }) => {
       
       const datase = await ress.json();
 
-      if(datas.modifiedCount > 0){
+      if(datase.modifiedCount > 0){
         toast.success("Room updated successfully");
         setIsEditModalOpen(false);
         router.push("/my-listroom");
