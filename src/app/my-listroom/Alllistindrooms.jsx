@@ -223,8 +223,8 @@ const Alllistindrooms = ({ da, token }) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-2  p-3">
-           <Link href={`/listedroomdettails/${_id}`}> <button className="flex-1   hover:bg-gray-700 py-2 rounded-lg text-sm  bg-blue-900 transition">
+          <div className="flex gap-2  pt-2">
+           <Link href={`/listedroomdettails/${_id}`}> <button className="flex-1   hover:bg-gray-700 p-3 rounded-lg text-sm  bg-blue-900 transition">
               View
             </button>
             </Link>

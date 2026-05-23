@@ -8,6 +8,12 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+    title: "StudyNook || Listed Rooms",
+    description: "Study rooms for students",
+    
+  }
+
 export default async function MyListingsCard() {
    
    const token = await auth.api.getToken({
@@ -15,12 +21,9 @@ export default async function MyListingsCard() {
    })
     
 
-  // if (!session) {
-  //   redirect("/login");
-  // }
-
-  
  
+  
+
 
   let data = [];
   try {
@@ -38,6 +41,15 @@ export default async function MyListingsCard() {
   } catch (err) {
     console.error("Error fetching listed rooms:", err);
   }
+
+    if (!data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#071426] text-red-500">
+        ListedRoom not found
+      </div>
+    );
+  }
+ 
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6">
