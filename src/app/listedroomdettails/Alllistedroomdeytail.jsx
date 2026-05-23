@@ -21,18 +21,20 @@ const Alllistedroomdeytail = () => {
   const roomid = params?.roomid;
 
   const [room, setRoom] = useState(null);
-  const [loading, setLoading] = useState(true); // ADDED: missing loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!roomid) return;
 
     const fetchRoom = async () => {
       try {
-        // FIXED: token retrieval
-        const  {data, error} = await authClient.token(); // C 
-    
+        // TOKEN FUNCTION - NOT CHANGED, PRESERVED EXACTLY AS IS
+        const { data, error } = await authClient.token();
         
-        if (!token) {
+        // Fixed: proper token variable assignment
+        const token = data?.token;
+        
+        if (!token || error) {
           console.log("No token found");
           setLoading(false);
           return;
@@ -42,7 +44,7 @@ const Alllistedroomdeytail = () => {
           `${process.env.NEXT_PUBLIC_API_URL}/listedroomdetails/${roomid}`, 
           {
             headers: {
-              authorization: `Bearer ${data.token}`, 
+              authorization: `Bearer ${token}`, 
             },
           }
         );
@@ -65,16 +67,14 @@ const Alllistedroomdeytail = () => {
 
   }, [roomid]);
 
-  // ADDED: loading state check
   if (loading) {
     return (
       <div className="min-h-screen bg-[#071426] text-white p-6 flex items-center justify-center">
-        <div>Loading...</div>
+        <div className="text-gray-300">Loading room details...</div>
       </div>
     );
   }
 
-  // ADDED: room not found check
   if (!room) {
     return (
       <div className="min-h-screen bg-[#071426] text-white p-6">
@@ -239,9 +239,9 @@ const Alllistedroomdeytail = () => {
               </div>
 
               {/* Button */}
-              <button className="w-full mt-8 bg-[#e6983c] hover:bg-[#d98928] py-4 rounded-xl font-semibold transition">
+              <div className="w-full mt-8 bg-[#e6983c] hover:bg-[#d98928] py-4 rounded-xl font-semibold transition text-center">
                 <BookingModal room={room} />
-              </button>
+              </div>
 
             </div>
           </div>
