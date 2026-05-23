@@ -39,9 +39,12 @@ const Fewcourse = ({da}) => {
           {roomName}
         </h2>
  
+
+
+ 
         <div className="flex items-center justify-between text-gray-400 mt-2 sm:mt-3 text-xs sm:text-sm">
-          <span>{floor}</span>
-          <span>{capacity}</span>
+          <span>Floor: {floor}</span>
+          <span>Capacity: {capacity}</span>
         </div>
  
         <p className="text-gray-300 mt-3 sm:mt-5 leading-relaxed text-sm sm:text-base">
