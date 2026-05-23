@@ -8,7 +8,7 @@ import { authClient } from "../lib/auth-client";
 
 
 const Allbookins = () => {
-    const [cancelledBookingId, setCancelledBookingId] = useState(null); // Track single cancelled booking ID
+    const [cancelledBookingId, setCancelledBookingId] = useState(null);
     const [bookings, setBookings] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -73,8 +73,7 @@ const Allbookins = () => {
 
       const datas = await res.json();
       if(datas){
-        setCancelledBookingId(id); // Set only the cancelled booking ID
-        // Optional: Remove the booking from the list after 2 seconds
+        setCancelledBookingId(id);
         setTimeout(() => {
           setBookings(prevBookings => prevBookings.filter(booking => booking._id !== id));
           setCancelledBookingId(null);
@@ -87,7 +86,6 @@ const Allbookins = () => {
     }
   };
 
-  // SAFE DATE FORMAT
   const formatDate = (dateString) => {
     const date = dateString ? new Date(dateString) : null;
     if (!date || isNaN(date)) return "Invalid date";
@@ -102,34 +100,36 @@ const Allbookins = () => {
   
   return (
     <div>
-      <div className="min-h-screen bg-[#07111F] text-white p-10">
+      <div className="min-h-screen bg-[#07111F] text-white p-4 sm:p-6 md:p-8 lg:p-10">
         <div className="max-w-6xl mx-auto">
 
           {/* HEADER */}
-          <div className="mb-8">
-            <h1 className="text-5xl font-bold">My Bookings</h1>
-            <p className="text-gray-400 mt-2">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+              My Bookings
+            </h1>
+            <p className="text-gray-400 text-sm sm:text-base mt-1 sm:mt-2">
               View and manage your study room reservations
             </p>
           </div>
 
           {/* BOOKINGS */}
           {bookings.length === 0 ? (
-            <div className="text-center text-gray-400 py-20">
+            <div className="text-center text-gray-400 py-12 sm:py-20 text-sm sm:text-base">
               No bookings found
             </div>
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               {bookings.map((booking) => (
                 <div
                   key={booking._id}
-                  className="bg-[#0D1B2A] border border-[#1E3550] rounded-2xl p-5 flex justify-between items-center"
+                  className="bg-[#0D1B2A] border border-[#1E3550] rounded-xl sm:rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:justify-between md:items-center gap-4 md:gap-0"
                 >
-                  {/* LEFT */}
-                  <div className="flex gap-4">
-
+                  {/* LEFT SECTION */}
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    
                     {/* IMAGE */}
-                    <div className="relative w-[120px] h-[85px] rounded-xl overflow-hidden bg-gray-800">
+                    <div className="relative w-full sm:w-[120px] h-[200px] sm:h-[85px] rounded-xl overflow-hidden bg-gray-800 sm:self-start">
                       {booking.image && (
                         <Image
                           src={booking.image}
@@ -141,44 +141,42 @@ const Allbookins = () => {
                     </div>
 
                     {/* CONTENT */}
-                    <div>
-                      <h2 className="text-2xl font-bold">
+                    <div className="flex-1">
+                      <h2 className="text-xl sm:text-2xl font-bold">
                         {booking.roomName}
                       </h2>
-                      <p className="text-gray-400">{booking.floor}</p>
+                      <p className="text-gray-400 text-sm sm:text-base">
+                        {booking.floor}
+                      </p>
 
-                      <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-300">
+                      <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs sm:text-sm text-gray-300">
                         <span>📅 {formatDate(booking.date)}</span>
-                        <span>
-                          🕒 {booking.startTime} – {booking.endTime}
-                        </span>
+                        <span>🕒 {booking.startTime} – {booking.endTime}</span>
                         <span>💲 ${booking.totalCost}.00 total</span>
                       </div>
 
-                      <p className="italic text-gray-400 mt-3">
+                      <p className="italic text-gray-400 text-xs sm:text-sm mt-2 sm:mt-3">
                         Note: {booking.specialNote || "N/A"}
                       </p>
                     </div>
                   </div>
 
-                  {/* RIGHT */}
-                  <div className="flex flex-col items-end gap-4">
+                  {/* RIGHT SECTION */}
+                  <div className="flex flex-row md:flex-col items-center justify-between md:items-end gap-3 md:gap-4 mt-2 md:mt-0">
                     {cancelledBookingId === booking._id ? (
-                      <span className="px-4 py-1 rounded-full bg-red-500/15 text-red-400 border border-red-500/20">
+                      <span className="px-3 sm:px-4 py-1 rounded-full bg-red-500/15 text-red-400 border border-red-500/20 text-xs sm:text-sm">
                         ✕ Cancelled
                       </span>
                     ) : (
                       <>
-                        <div className="flex gap-6 items-center">
-                          <span className="px-4 py-1 rounded-full bg-green-500/15 text-green-400 border border-green-500/20">
-                            ● Confirmed
-                          </span>
-                        </div>
+                        <span className="px-3 sm:px-4 py-1 rounded-full bg-green-500/15 text-green-400 border border-green-500/20 text-xs sm:text-sm">
+                          ● Confirmed
+                        </span>
 
                         <button
                           onClick={() => handleCancel(booking._id)}
                           disabled={isLoading}
-                          className="border border-red-500/30 text-red-400 px-5 py-2 rounded-xl hover:bg-red-500/10 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="border border-red-500/30 text-red-400 px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl hover:bg-red-500/10 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                         >
                           ✕ Cancel
                         </button>

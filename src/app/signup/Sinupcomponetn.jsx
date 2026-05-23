@@ -1,4 +1,4 @@
- "use client"
+"use client"
 
 import {
   Button,
@@ -33,7 +33,7 @@ const SignupComponent = () => {
           name: name,
           email: email,
           password: password,
-          image: image || undefined, // Allow empty image URL
+          image: image || undefined,
           callbackURL: "/login",
         });
     
@@ -71,15 +71,15 @@ const SignupComponent = () => {
       };
     return (
         <div>
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#111f33] to-[#0f1c2e] px-4">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#111f33] to-[#0f1c2e] px-3 sm:px-4 py-6 sm:py-8">
                   {/* CARD */}
-                  <div className="w-full max-w-md bg-[#0f1724] border border-white/10 rounded-2xl shadow-2xl p-8">
+                  <div className="w-full max-w-sm sm:max-w-md bg-[#0f1724] border border-white/10 rounded-xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 md:p-8">
                     {/* TITLE */}
-                    <div className="text-center mb-6">
-                      <h1 className="text-3xl font-bold text-white">
+                    <div className="text-center mb-4 sm:mb-5 md:mb-6">
+                      <h1 className="text-2xl sm:text-3xl font-bold text-white">
                         Create Account 🚀
                       </h1>
-                      <p className="text-gray-400 mt-2">
+                      <p className="text-gray-400 text-sm sm:text-base mt-1 sm:mt-2">
                         Sign up to start your study journey
                       </p>
                     </div>
@@ -87,49 +87,49 @@ const SignupComponent = () => {
                     {/* GOOGLE SIGNUP */}
                     <Button
                       onClick={handleGoogleLogin}
-                      className="w-full flex items-center justify-center gap-2 bg-white text-black hover:bg-gray-100 mb-5"
+                      className="w-full flex items-center justify-center gap-2 bg-white text-black hover:bg-gray-100 mb-4 sm:mb-5 text-sm sm:text-base py-2 sm:py-2.5"
                     >
-                      <FaGoogle />
+                      <FaGoogle className="text-sm sm:text-base" />
                       Continue with Google
                     </Button>
             
                     {/* DIVIDER */}
-                    <div className="flex items-center gap-3 mb-5">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
                       <div className="h-px bg-gray-700 flex-1"></div>
-                      <span className="text-gray-400 text-sm">OR</span>
+                      <span className="text-gray-400 text-xs sm:text-sm">OR</span>
                       <div className="h-px bg-gray-700 flex-1"></div>
                     </div>
             
                     {/* FORM */}
-                    <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
+                    <Form className="flex flex-col gap-3 sm:gap-4" onSubmit={onSubmit}>
                       {/* NAME */}
                       <TextField isRequired name="name" type="text">
-                        <Label className="text-gray-300">Full Name</Label>
+                        <Label className="text-gray-300 text-sm sm:text-base">Full Name</Label>
                         <Input
                           placeholder="John Doe"
-                          className="bg-[#111f33] text-white"
+                          className="bg-[#111f33] text-white text-sm sm:text-base"
                         />
                         <FieldError />
                       </TextField>
             
                       {/* EMAIL */}
                       <TextField isRequired name="email" type="email">
-                        <Label className="text-gray-300">Email</Label>
+                        <Label className="text-gray-300 text-sm sm:text-base">Email</Label>
                         <Input
                           placeholder="john@example.com"
-                          className="bg-[#111f33] text-white"
+                          className="bg-[#111f33] text-white text-sm sm:text-base"
                         />
                         <FieldError />
                       </TextField>
             
                       {/* IMAGE URL (Optional) */}
                       <TextField name="image" type="text">
-                        <Label className="text-gray-300">Profile Image URL (Optional)</Label>
+                        <Label className="text-gray-300 text-sm sm:text-base">Profile Image URL (Optional)</Label>
                         <Input
                           placeholder="https://example.com/avatar.jpg"
-                          className="bg-[#111f33] text-white"
+                          className="bg-[#111f33] text-white text-sm sm:text-base"
                         />
-                        <Description className="text-gray-500">
+                        <Description className="text-gray-500 text-xs sm:text-sm">
                           Leave empty to use default avatar
                         </Description>
                         <FieldError />
@@ -137,13 +137,13 @@ const SignupComponent = () => {
             
                       {/* PASSWORD */}
                       <TextField isRequired minLength={8} name="password" type="password">
-                        <Label className="text-gray-300">Password</Label>
+                        <Label className="text-gray-300 text-sm sm:text-base">Password</Label>
                         <Input
                           type="password"
                           placeholder="Enter your password"
-                          className="bg-[#111f33] text-white"
+                          className="bg-[#111f33] text-white text-sm sm:text-base"
                         />
-                        <Description className="text-gray-500">
+                        <Description className="text-gray-500 text-xs sm:text-sm">
                           Must be at least 8 characters with 1 uppercase & 1 number
                         </Description>
                         <FieldError />
@@ -153,13 +153,13 @@ const SignupComponent = () => {
                       <Button
                         type="submit"
                         isLoading={isLoading}
-                        className="w-full bg-blue-600 hover:bg-blue-500 text-white"
+                        className="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm sm:text-base py-2 sm:py-2.5 mt-1 sm:mt-2"
                       >
                         Sign Up
                       </Button>
             
                       {/* LOGIN LINK */}
-                      <p className="text-center text-gray-400 text-sm mt-2">
+                      <p className="text-center text-gray-400 text-xs sm:text-sm mt-2">
                         Already have an account?{" "}
                         <Link
                           href="/login"
