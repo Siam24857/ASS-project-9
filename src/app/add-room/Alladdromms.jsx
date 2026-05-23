@@ -53,14 +53,14 @@ const Alladdromms = () => {
 
         try {
             // FIXED: Properly get token
-            const token = await authClient.getToken(); // Changed from authClient.token()
+            const { data , error} = await authClient.getToken(); // Changed from authClient.token()
 
             const [addRoomRes, addListedRes] = await Promise.all([
                 fetch(`${API_URL}/add-rooms`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        authorization: `Bearer ${token.token}`,
+                        authorization: `Bearer ${data.token}`,
                     },
                     credentials: 'include',
                     body: JSON.stringify(finalData),
