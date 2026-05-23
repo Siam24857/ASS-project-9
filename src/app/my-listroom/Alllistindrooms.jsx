@@ -230,7 +230,7 @@ const Alllistindrooms = ({ da }) => {
                       name="roomName" 
                       placeholder="e.g. Research Lab Suite"
                       required
-                      className="mt-1"
+                      className="mt-1 text-white"
                       defaultValue={roomName}
                     />
                   </div>
@@ -240,7 +240,7 @@ const Alllistindrooms = ({ da }) => {
                     <TextArea 
                       name="description" 
                       placeholder="Describe the room..." 
-                      className="mt-1"
+                      className="mt-1 text-white"
                       defaultValue={description}
                     />
                   </div>
@@ -252,7 +252,7 @@ const Alllistindrooms = ({ da }) => {
                       type="number" 
                       placeholder="0"
                       min="0"
-                      className="mt-1"
+                      className="mt-1 text-white"
                       defaultValue={bookings}
                     />
                   </div>
@@ -263,7 +263,7 @@ const Alllistindrooms = ({ da }) => {
                       name="image" 
                       placeholder="https://example.com/room-image.jpg"
                       required
-                      className="mt-1"
+                      className="mt-1 text-white"
                       defaultValue={image}
                     />
                   </div>
@@ -274,7 +274,7 @@ const Alllistindrooms = ({ da }) => {
                       <Input 
                         name="floor" 
                         placeholder="e.g., 5th Floor" 
-                        className="mt-1" 
+                        className="mt-1 text-white" 
                         defaultValue={floor}
                       />
                     </div>
@@ -286,7 +286,7 @@ const Alllistindrooms = ({ da }) => {
                         type="number"
                         placeholder="6"
                         min="1"
-                        className="mt-1"
+                        className="mt-1 text-white"
                         defaultValue={capacity}
                       />
                     </div>
@@ -296,7 +296,7 @@ const Alllistindrooms = ({ da }) => {
                       <Input 
                         name="rate" 
                         placeholder="$16/hr" 
-                        className="mt-1" 
+                        className="mt-1 text-white" 
                         defaultValue={rate} 
                       />
                     </div>
