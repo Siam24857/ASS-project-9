@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { API_URL } from "../lib/config";
+import { authClient } from "../lib/auth-client";
 
 const TIME_SLOTS = Array.from({ length: 13 }, (_, i) => {
   const hour = i + 8;
