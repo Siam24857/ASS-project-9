@@ -87,7 +87,7 @@ const Alladdromms = () => {
             // 401 Unauthorized check
             if (addRoomRes.status === 401 || addListedRes.status === 401) {
                 toast.error("Session expired. Please login again.");
-                router.push("/login");
+                
                 setIsLoading(false);
                 return;
             }
