@@ -8,7 +8,7 @@ import { authClient } from "../lib/auth-client";
 
 
 const Allbookins = () => {
-    const [deletcount, setDeletcount] = useState(false)
+    const [cancelledBookings, setCancelledBookings] = useState({}); // Track cancelled bookings by ID
 
     const [bookings, setBookings] = useState([]);
  
@@ -73,7 +73,7 @@ const Allbookins = () => {
 
         const datas = await res.json();
         if(datas){
-             setDeletcount(true);
+             setCancelledBookings(prev => ({ ...prev, [id]: true })); // Mark only this booking as cancelled
         }
   };
 
@@ -153,7 +153,7 @@ const Allbookins = () => {
 
                 {/* RIGHT */}
                 <div className="flex flex-col items-end gap-4">
-                  {deletcount ? (
+                  {cancelledBookings[booking._id] ? ( // Check if this specific booking is cancelled
                     <span className="px-4 py-1 rounded-full bg-red-500/15 text-red-400 border border-red-500/20">
                       ✕ Cancelled
                     </span>
@@ -186,3 +186,4 @@ const Allbookins = () => {
 };
 
 export default Allbookins;
+
