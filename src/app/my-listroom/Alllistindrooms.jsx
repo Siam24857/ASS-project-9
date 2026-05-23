@@ -1,7 +1,6 @@
 "use client";
 import { Button, Input, Label, Modal, TextArea } from "@heroui/react";
 import { Rocket } from "lucide-react";
- 
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,7 +10,7 @@ import { TfiMoney } from "react-icons/tfi";
 import { toast } from "react-toastify";
 import { authClient } from "@/app/lib/auth-client";
 
-const Alllistindrooms = ({ da  }) => {
+const Alllistindrooms = ({ da }) => {
   const router = useRouter();
   
   const {
@@ -51,7 +50,6 @@ const Alllistindrooms = ({ da  }) => {
       createdAt: new Date().toISOString()
     };
 
-    // Validate required fields
     if (!finalData.roomName) {
       toast.error("Room name is required");
       setIsLoading(false);
@@ -65,7 +63,16 @@ const Alllistindrooms = ({ da  }) => {
     }
 
     try {
-      const {data, error} = await authClient.token()
+      const {data, error } = await authClient.token();
+       
+      
+      if (!token) {
+        toast.error("Authentication failed. Please login again.");
+        router.push("/login");
+        setIsLoading(false);
+        return;
+      }
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listed/${_id}`, {
         method: "PATCH",
         headers: {
@@ -77,7 +84,6 @@ const Alllistindrooms = ({ da  }) => {
      
       const datas = await res.json();
 
-      // Update main room
       const ress = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rooms/${roomID}`, {
         method: "PATCH",
         headers: {
@@ -111,12 +117,20 @@ const Alllistindrooms = ({ da  }) => {
     }
     
     try {
-       const {data, error} = await authClient.token()
+      const {data, error} = await authClient.token();
+      const token = data?.token || error?.token;
+      
+      if (!token) {
+        toast.error("Authentication failed. Please login again.");
+        router.push("/login");
+        return;
+      }
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listed/${_id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer ${data.token}`,
+          authorization: `Bearer ${token}`,
         },
       });
 
@@ -138,7 +152,6 @@ const Alllistindrooms = ({ da  }) => {
   return (
     <>
       <div className="max-w-sm bg-[#111827] rounded-2xl shadow-lg overflow-hidden border border-gray-800">
-        {/* Image */}
         <div className="relative w-full h-48">
           <Image
             src={image || "https://images.unsplash.com/photo-1521737604893-d14cc237f11d"}
@@ -151,22 +164,16 @@ const Alllistindrooms = ({ da  }) => {
           </span>
         </div>
 
-        {/* Content */}
         <div className="p-4 space-y-3">
-          {/* Title */}
           <h2 className="text-lg font-semibold text-white">{roomName}</h2>
-
-          {/* Description */}
           <p className="text-sm text-gray-400">{description}</p>
-
-          {/* Stats */}
+          
           <div className="flex items-center gap-3 text-xs text-gray-300 flex-wrap">
             <span>Floor {floor}</span>
             <span className="flex gap-1 items-center"><BsFillPeopleFill /> Up to {capacity} people</span>
             <span className="flex gap-1 items-center"><TfiMoney /> ${rate}/hr</span>
           </div>
 
-          {/* Amenities */}
           <div className="flex flex-wrap gap-2">
             {amenities.length > 0 ? (
               amenities.map((text, i) => (
@@ -179,7 +186,6 @@ const Alllistindrooms = ({ da  }) => {
             )}
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-2 pt-2">
             <Link href={`/listedroomdettails/${_id}`}>
               <button className="flex-1 hover:bg-gray-700 p-3 rounded-lg text-sm bg-blue-900 transition">
@@ -187,178 +193,13 @@ const Alllistindrooms = ({ da  }) => {
               </button>
             </Link>
 
-            {/* Edit Modal */}
-            <Modal isOpen={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-              <Button onPress={() => setIsEditModalOpen(true)}>Edit</Button>
-              <Modal.Backdrop />
-              <Modal.Container>
-                <Modal.Dialog className="sm:max-w-[500px]">
-                  <Modal.CloseTrigger />
-                  <Modal.Header>
-                    <Modal.Icon className="bg-default text-foreground">
-                      <Rocket className="size-5" />
-                    </Modal.Icon>
-                    <Modal.Heading>Edit Room</Modal.Heading>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <form onSubmit={onsubmit} className="w-full space-y-6">
-                      <div>
-                        <Label>Room Name *</Label>
-                        <Input 
-                          name="roomName" 
-                          placeholder="e.g. Research Lab Suite"
-                          required
-                          className="mt-1"
-                          defaultValue={roomName}
-                        />
-                      </div>
-              
-                      <div>
-                        <Label>Description</Label>
-                        <TextArea 
-                          name="description" 
-                          placeholder="Describe the room..." 
-                          className="mt-1"
-                          defaultValue={description}
-                        />
-                      </div>
-              
-                      <div>
-                        <Label>Initial Bookings</Label>
-                        <Input 
-                          name="bookings" 
-                          type="number" 
-                          placeholder="0"
-                          min="0"
-                          className="mt-1"
-                          defaultValue={bookings}
-                        />
-                      </div>
-              
-                      <div>
-                        <Label>Image URL *</Label>
-                        <Input 
-                          name="image" 
-                          placeholder="https://example.com/room-image.jpg"
-                          required
-                          className="mt-1"
-                          defaultValue={image}
-                        />
-                      </div>
-              
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <Label>Floor</Label>
-                          <Input 
-                            name="floor" 
-                            placeholder="e.g., 5th Floor" 
-                            className="mt-1" 
-                            defaultValue={floor}
-                          />
-                        </div>
-              
-                        <div>
-                          <Label>Capacity (people)</Label>
-                          <Input 
-                            name="capacity" 
-                            type="number"
-                            placeholder="6"
-                            min="1"
-                            className="mt-1"
-                            defaultValue={capacity}
-                          />
-                        </div>
-              
-                        <div>
-                          <Label>Rate</Label>
-                          <Input 
-                            name="rate" 
-                            placeholder="$16/hr" 
-                            className="mt-1" 
-                            defaultValue={rate} 
-                          />
-                        </div>
-                      </div>
-              
-                      <div>
-                        <Label className="mb-2 block">Amenities</Label>
-                        <div className="grid grid-cols-2 gap-2 text-sm">
-                          <label className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="amenities"
-                              value="Whiteboard"
-                              defaultChecked={amenities?.includes("Whiteboard")}
-                            />
-                            <span>Whiteboard</span>
-                          </label>
+            <Button 
+              onPress={() => setIsEditModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Edit
+            </Button>
 
-                          <label className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="amenities"
-                              value="Projector"
-                              defaultChecked={amenities?.includes("Projector")}
-                            />
-                            <span>Projector</span>
-                          </label>
-
-                          <label className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="amenities"
-                              value="Wi-Fi"
-                              defaultChecked={amenities?.includes("Wi-Fi")}
-                            />
-                            <span>Wi-Fi</span>
-                          </label>
-
-                          <label className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="amenities"
-                              value="Power Outlets"
-                              defaultChecked={amenities?.includes("Power Outlets")}
-                            />
-                            <span>Power Outlets</span>
-                          </label>
-
-                          <label className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="amenities"
-                              value="Quiet Zone"
-                              defaultChecked={amenities?.includes("Quiet Zone")}
-                            />
-                            <span>Quiet Zone</span>
-                          </label>
-
-                          <label className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="amenities"
-                              value="Air Conditioning"
-                              defaultChecked={amenities?.includes("Air Conditioning")}
-                            />
-                            <span>Air Conditioning</span>
-                          </label>
-                        </div>
-                      </div>
-              
-                      <Button
-                        type="submit"
-                        isLoading={isLoading}
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold"
-                      >
-                        Update Room
-                      </Button>
-                    </form>
-                  </Modal.Body>
-                </Modal.Dialog>
-              </Modal.Container>
-            </Modal>
-
-            {/* Delete Button */}
             <button
               onClick={onDelete}
               className="bg-red-600 hover:bg-red-700 px-4 rounded-lg text-white transition"
@@ -368,6 +209,177 @@ const Alllistindrooms = ({ da  }) => {
           </div>
         </div>
       </div>
+
+      {/* Fixed HeroUI Modal */}
+      <Modal isOpen={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <Modal.Backdrop>
+          <Modal.Container>
+            <Modal.Dialog className="sm:max-w-[500px] bg-gray-900 text-white">
+              <Modal.CloseTrigger />
+              <Modal.Header>
+                <Modal.Icon className="bg-default text-foreground">
+                  <Rocket className="size-5" />
+                </Modal.Icon>
+                <Modal.Heading>Edit Room</Modal.Heading>
+              </Modal.Header>
+              <Modal.Body>
+                <form onSubmit={onsubmit} className="w-full space-y-6">
+                  <div>
+                    <Label>Room Name *</Label>
+                    <Input 
+                      name="roomName" 
+                      placeholder="e.g. Research Lab Suite"
+                      required
+                      className="mt-1"
+                      defaultValue={roomName}
+                    />
+                  </div>
+          
+                  <div>
+                    <Label>Description</Label>
+                    <TextArea 
+                      name="description" 
+                      placeholder="Describe the room..." 
+                      className="mt-1"
+                      defaultValue={description}
+                    />
+                  </div>
+          
+                  <div>
+                    <Label>Initial Bookings</Label>
+                    <Input 
+                      name="bookings" 
+                      type="number" 
+                      placeholder="0"
+                      min="0"
+                      className="mt-1"
+                      defaultValue={bookings}
+                    />
+                  </div>
+          
+                  <div>
+                    <Label>Image URL *</Label>
+                    <Input 
+                      name="image" 
+                      placeholder="https://example.com/room-image.jpg"
+                      required
+                      className="mt-1"
+                      defaultValue={image}
+                    />
+                  </div>
+          
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label>Floor</Label>
+                      <Input 
+                        name="floor" 
+                        placeholder="e.g., 5th Floor" 
+                        className="mt-1" 
+                        defaultValue={floor}
+                      />
+                    </div>
+          
+                    <div>
+                      <Label>Capacity (people)</Label>
+                      <Input 
+                        name="capacity" 
+                        type="number"
+                        placeholder="6"
+                        min="1"
+                        className="mt-1"
+                        defaultValue={capacity}
+                      />
+                    </div>
+          
+                    <div>
+                      <Label>Rate</Label>
+                      <Input 
+                        name="rate" 
+                        placeholder="$16/hr" 
+                        className="mt-1" 
+                        defaultValue={rate} 
+                      />
+                    </div>
+                  </div>
+          
+                  <div>
+                    <Label className="mb-2 block">Amenities</Label>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="amenities"
+                          value="Whiteboard"
+                          defaultChecked={amenities?.includes("Whiteboard")}
+                        />
+                        <span>Whiteboard</span>
+                      </label>
+
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="amenities"
+                          value="Projector"
+                          defaultChecked={amenities?.includes("Projector")}
+                        />
+                        <span>Projector</span>
+                      </label>
+
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="amenities"
+                          value="Wi-Fi"
+                          defaultChecked={amenities?.includes("Wi-Fi")}
+                        />
+                        <span>Wi-Fi</span>
+                      </label>
+
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="amenities"
+                          value="Power Outlets"
+                          defaultChecked={amenities?.includes("Power Outlets")}
+                        />
+                        <span>Power Outlets</span>
+                      </label>
+
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="amenities"
+                          value="Quiet Zone"
+                          defaultChecked={amenities?.includes("Quiet Zone")}
+                        />
+                        <span>Quiet Zone</span>
+                      </label>
+
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="amenities"
+                          value="Air Conditioning"
+                          defaultChecked={amenities?.includes("Air Conditioning")}
+                        />
+                        <span>Air Conditioning</span>
+                      </label>
+                    </div>
+                  </div>
+          
+                  <Button
+                    type="submit"
+                    isLoading={isLoading}
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold"
+                  >
+                    Update Room
+                  </Button>
+                </form>
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
     </>
   );
 };
