@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { API_URL } from "../lib/config";
+import { authClient } from "../lib/auth-client";
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -12,10 +13,14 @@ export default function MyBookings() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
+           const {data, error} = await authClient.token()
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/bookings`,
           {
             cache: "no-store",
+            headers: {
+              authorization: `Bearer ${data.token}`,
+            },
           }
         );
 
@@ -25,10 +30,10 @@ export default function MyBookings() {
           return;
         }
 
-        const data = await res.json();
+        const datas = await res.json();
 
-        if (Array.isArray(data)) {
-          setBookings(data);
+        if (Array.isArray(datas)) {
+          setBookings(datas);
         } else {
           console.error("API did not return an array:", data);
           setBookings([]);

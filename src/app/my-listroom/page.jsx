@@ -3,20 +3,23 @@ import { redirect } from "next/navigation";
  
 import Alllistindrooms from "./Alllistindrooms";
 import { auth } from "../lib/auth";
+import { RiTokenSwapFill } from "react-icons/ri";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function MyListingsCard() {
    
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+   const token = await auth.api.getToken({
+    headers: await headers()
+   })
+    
 
-  if (!session) {
-    redirect("/login");
-  }
+  // if (!session) {
+  //   redirect("/login");
+  // }
 
- const verifiedtoken = process.env.JWTTOKJEN 
+  
  
 
   let data = [];
@@ -24,7 +27,7 @@ export default async function MyListingsCard() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listed-room`, {
       cache: "no-store",
       headers: {
-        authorization: verifiedtoken,
+        authorization: `Bearer ${token.token}`,
       }
     });
     if (res.ok) {
@@ -51,9 +54,11 @@ export default async function MyListingsCard() {
           </p>
         </div>
 
-        <button className="bg-orange-500 hover:bg-orange-600 transition px-4 py-2 rounded-lg font-medium">
-          + Add New Room
-        </button>
+        <Link href="/add-room">
+          <button className="bg-orange-500 hover:bg-orange-600 transition px-4 py-2 rounded-lg font-medium">
+            + Add New Room
+          </button>
+        </Link>
 
       </div>
 
@@ -63,7 +68,7 @@ export default async function MyListingsCard() {
           <Alllistindrooms
             key={da._id}
             da={da}
-            token={verifiedtoken}
+            token={token.token}
           />
         ))}
 

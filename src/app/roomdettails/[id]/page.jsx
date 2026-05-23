@@ -13,54 +13,67 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import BookingModal from "@/app/components/Bookinfmodal";
-import { API_URL } from "@/app/lib/config";
+ 
+import { authClient } from "@/app/lib/auth-client";
 
-export default function RoomDetails() {
+const Roomdetails =() => {
 
  
   const params = useParams();
   const id = params.id;
+ 
 
  
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
 
   
+
+  
   useEffect(() => {
 
-  const verifiedtoken = process.env.JWTTOKJEN
-    if (!id) return;
+  const fetchRoom = async () => {
 
-    const fetchRoom = async () => {
-      try {
+    try {
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/roomdetails/${id}`, {
-            headers: {
-              authorization: verifiedtoken  
-          }}
-        );
+      // SESSION আনো
+      const {data, error} = await authClient.token()
 
-        // যদি error হয়
-        if (!res.ok) {
-          throw new Error("Failed to fetch");
+      console.log(data);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/roomdetails/${id}`,
+        {
+          headers: {
+            authorization: `Bearer ${data.token}`,
+          },
         }
+      );
 
-        const data = await res.json();
-
-        setRoom(data);
-
-      } catch (error) {
-        console.log(error);
-
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error("Failed to fetch");
       }
-    };
 
+      const datas = await res.json();
+
+      setRoom(datas);
+
+    } catch (error) {
+
+      console.log(error);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
+
+  if (id) {
     fetchRoom();
+  }
 
-  }, [id]);
+}, [id]);
 
   // LOADING
   if (loading) {
@@ -240,3 +253,5 @@ export default function RoomDetails() {
     </div>
   );
 }
+
+export default Roomdetails

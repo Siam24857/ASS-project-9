@@ -84,19 +84,21 @@ export default function RoomBookingModal({ room }) {
 };
 
     try {
+       const {data, error} = await authClient.token()
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${data.token}`,
         },
         body: JSON.stringify(bookingData),
       });
 
-      const data = await res.json();
+      const datas = await res.json();
 
       console.log("Booking Data:", bookingData);
 
-      if (data) {
+      if (datas) {
         toast.success("Booking Successfully", {
           position: "top-center",
         });

@@ -52,11 +52,13 @@ const Page = () => {
     }
 
     try {
+       const {data, error} = await authClient.token()
       const [addRoomRes, addListedRes] = await Promise.all([
         fetch(`${API_URL}/add-rooms`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+              authorization: `Bearer ${data.token}`,
           },
           credentials: 'include', // Better-Auth Cookie পাঠাবে
           body: JSON.stringify(finalData),
@@ -65,6 +67,7 @@ const Page = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+              authorization: `Bearer ${data.token}`,
           },
           credentials: 'include', // Better-Auth Cookie পাঠাবে
           body: JSON.stringify(finalData),

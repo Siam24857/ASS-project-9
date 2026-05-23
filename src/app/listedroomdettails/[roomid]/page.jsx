@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import BookingModal from "@/app/components/Bookinfmodal";
+import { authClient } from "@/app/lib/auth-client";
 
 export default function Listedroomdettaisl() {
 
@@ -31,19 +32,23 @@ export default function Listedroomdettaisl() {
 
     const fetchRoom = async () => {
       try {
- 
+       const {data, error} = await authClient.token()
 
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/listedroomdetails/${roomid}`, 
-      
+          {
+            headers: {
+            authorization: `Bearer ${data.token}`,
+          },
+          }
         );
 
         if (!res.ok) {
           throw new Error("Failed to fetch");
         }
 
-        const data = await res.json();
-        setRoom(data);
+        const datas = await res.json();
+        setRoom(datas);
 
       } catch (error) {
         console.log(error);

@@ -20,6 +20,7 @@ const Alllistindrooms = ({ da, token }) => {
     floor,
     capacity,
     rate,
+    bookings,
     amenities = [],
   } = da || {};
   
@@ -61,7 +62,7 @@ const Alllistindrooms = ({ da, token }) => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json", 
-        authorization: token
+        authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(finalData)
 
@@ -73,7 +74,7 @@ const Alllistindrooms = ({ da, token }) => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-          authorization: token
+          authorization: `Bearer ${token}`
       },
       body: JSON.stringify(finalData)
 
@@ -110,12 +111,14 @@ const Alllistindrooms = ({ da, token }) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-         authorization: verifiedtoken
+        authorization: `Bearer ${token}`,
       },
     });
 
     const result = await res.json();
-    console.log("DELETE RESULT:", result);
+     if(result){
+      redirect("/my-listroom")
+     }
 
     if (res.ok) {
       alert("Room deleted successfully");
@@ -220,7 +223,7 @@ const Alllistindrooms = ({ da, token }) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2  p-3">
            <Link href={`/listedroomdettails/${_id}`}> <button className="flex-1   hover:bg-gray-700 py-2 rounded-lg text-sm  bg-blue-900 transition">
               View
             </button>
@@ -252,6 +255,7 @@ const Alllistindrooms = ({ da, token }) => {
                           placeholder="e.g. Research Lab Suite"
                           required
                           className="mt-1 text-white"
+                          defaultValue={roomName}
                         />
                       </div>
               
@@ -261,6 +265,7 @@ const Alllistindrooms = ({ da, token }) => {
                           name="description" 
                           placeholder="Describe the room..." 
                           className="mt-1"
+                          defaultValue={description}
                         />
                       </div>
               
@@ -272,6 +277,7 @@ const Alllistindrooms = ({ da, token }) => {
                           placeholder="0"
                           min="0"
                           className="mt-1 text-gray-300"
+                          defaultValue={bookings}
                         />
                       </div>
               
@@ -282,6 +288,7 @@ const Alllistindrooms = ({ da, token }) => {
                           placeholder="https://example.com/room-image.jpg"
                           required
                           className="mt-1 text-white"
+                          defaultValue={image}
                         />
                       </div>
               
@@ -299,44 +306,85 @@ const Alllistindrooms = ({ da, token }) => {
                             placeholder="6"
                             min="1"
                             className="mt-1 text-white"
+                            defaultValue={capacity}
                           />
                         </div>
               
                         <div>
                           <Label>Rate</Label>
-                          <Input name="rate" placeholder="$16/hr" className="mt-1 text-white" />
+                          <Input name="rate" placeholder="$16/hr" className="mt-1 text-white" defaultValue={rate} />
                         </div>
                       </div>
               
                       <div>
-                        <Label className="mb-2 block">Amenities</Label>
-                        <div className="grid grid-cols-2 gap-2 text-sm">
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" name="amenities" value="Whiteboard" /> 
-                            <span>Whiteboard</span>
-                          </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" name="amenities" value="Projector" /> 
-                            <span>Projector</span>
-                          </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" name="amenities" value="Wi-Fi" /> 
-                            <span>Wi-Fi</span>
-                          </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" name="amenities" value="Power Outlets" /> 
-                            <span>Power Outlets</span>
-                          </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" name="amenities" value="Quiet Zone" /> 
-                            <span>Quiet Zone</span>
-                          </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" name="amenities" value="Air Conditioning" /> 
-                            <span>Air Conditioning</span>
-                          </label>
-                        </div>
-                      </div>
+  <Label className="mb-2 block">
+    Amenities
+  </Label>
+
+  <div className="grid grid-cols-2 gap-2 text-sm">
+
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="amenities"
+        value="Whiteboard"
+        defaultChecked={amenities?.includes("Whiteboard")}
+      />
+      <span>Whiteboard</span>
+    </label>
+
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="amenities"
+        value="Projector"
+        defaultChecked={amenities?.includes("Projector")}
+      />
+      <span>Projector</span>
+    </label>
+
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="amenities"
+        value="Wi-Fi"
+        defaultChecked={amenities?.includes("Wi-Fi")}
+      />
+      <span>Wi-Fi</span>
+    </label>
+
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="amenities"
+        value="Power Outlets"
+        defaultChecked={amenities?.includes("Power Outlets")}
+      />
+      <span>Power Outlets</span>
+    </label>
+
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="amenities"
+        value="Quiet Zone"
+        defaultChecked={amenities?.includes("Quiet Zone")}
+      />
+      <span>Quiet Zone</span>
+    </label>
+
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="amenities"
+        value="Air Conditioning"
+        defaultChecked={amenities?.includes("Air Conditioning")}
+      />
+      <span>Air Conditioning</span>
+    </label>
+
+  </div>
+</div>
               
                       <Button
                         type="submit"
