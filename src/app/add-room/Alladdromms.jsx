@@ -53,7 +53,7 @@ const Alladdromms = () => {
 
         try {
             // FIXED: Properly get token
-            const { data , error} = await authClient.getToken(); // Changed from authClient.token()
+            const { data , error} = await authClient.token()  
 
             const [addRoomRes, addListedRes] = await Promise.all([
                 fetch(`${API_URL}/add-rooms`, {
