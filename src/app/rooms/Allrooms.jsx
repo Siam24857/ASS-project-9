@@ -42,8 +42,8 @@ const Allrooms = ({da}) => {
             
                     {/* Floor & Capacity */}
                     <div className="flex items-center justify-between text-gray-400 mt-2 sm:mt-3 text-xs sm:text-sm">
-                      <span>{floor}</span>
-                      <span>{capacity}</span>
+                      <span>Floor: {floor}</span>
+                      <span>Capacity: {capacity}</span>
                     </div>
             
                     {/* Description */}
